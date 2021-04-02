@@ -64,8 +64,8 @@ def chess_card_css(web_content, context):
 }
 
 .chess_board td {
-  background: -webkit-gradient(linear,0 0, 0 100%, from(#fff), to(#eee));
-  -webkit-box-shadow: inset 0 0 0 1px #fff;
+  // background: -webkit-gradient(linear,0 0, 0 100%, from(#fff), to(#eee));
+  // -webkit-box-shadow: inset 0 0 0 1px #fff;
   font-size: 250%;
   height: 1em;
   width: 1em;
@@ -75,8 +75,9 @@ def chess_card_css(web_content, context):
 
 .chess_board tr:nth-child(odd) td:nth-child(even),
 .chess_board tr:nth-child(even) td:nth-child(odd) {
-  background: -webkit-gradient(linear,0 0, 0 100%, from(#ccc), to(#eee));
-  -webkit-box-shadow: inset 0 0 8px rgba(0,0,0,.4);
+  background: #96C2D1;
+  // background: -webkit-gradient(linear,0 0, 0 100%, from(#ccc), to(#eee));
+  // -webkit-box-shadow: inset 0 0 8px rgba(0,0,0,.4);
 }
 figure.chess_diagram  {
   display: inline-table;
