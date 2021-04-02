@@ -3,7 +3,7 @@
 Plugin for rendering chess diagrams in FEN notation inside anki. You should probably use the card
 model from https://ankiweb.net/shared/info/1176122148 instead.
 
-Updated from https://github.com/ospalh/anki-addons to run on Anki 2.1
+Updated from https://github.com/ospalh/anki-addons to run on Anki >= 2.1.22
 
 ## Description
 
