@@ -24,7 +24,10 @@ from . import six
 from collections import namedtuple
 
 from anki.cards import Card
-from anki.hooks import addHook
+from anki import hooks
+from anki.template import TemplateRenderContext, TemplateRenderOutput
+
+from aqt.gui_hooks import webview_will_set_content
 
 __version__ = '1.0.0'
 
@@ -52,17 +55,17 @@ fen_template = u"""<figure class="chess_diagram"><table class="chess_board">
 """
 
 
-def chess_card_css(self):
+def chess_card_css(web_content, context):
     """Add the chess style to the card style """
-    return u"""<style scoped>
+    web_content.head += u"""<style scoped>
 .chess_board {
   border:1px solid #333;
   border-spacing:0;
 }
 
 .chess_board td {
-  background: -webkit-gradient(linear,0 0, 0 100%, from(#fff), to(#eee));
-  -webkit-box-shadow: inset 0 0 0 1px #fff;
+  // background: -webkit-gradient(linear,0 0, 0 100%, from(#fff), to(#eee));
+  // -webkit-box-shadow: inset 0 0 0 1px #fff;
   font-size: 250%;
   height: 1em;
   width: 1em;
@@ -72,8 +75,9 @@ def chess_card_css(self):
 
 .chess_board tr:nth-child(odd) td:nth-child(even),
 .chess_board tr:nth-child(even) td:nth-child(odd) {
-  background: -webkit-gradient(linear,0 0, 0 100%, from(#ccc), to(#eee));
-  -webkit-box-shadow: inset 0 0 8px rgba(0,0,0,.4);
+  background: #96C2D1;
+  // background: -webkit-gradient(linear,0 0, 0 100%, from(#ccc), to(#eee));
+  // -webkit-box-shadow: inset 0 0 8px rgba(0,0,0,.4);
 }
 figure.chess_diagram  {
   display: inline-table;
@@ -86,7 +90,7 @@ figure.chess_diagram figcaption{
   caption-side: bottom;
 }
 
-</style>""" + old_css(self)
+</style>"""
 
 
 def counted_spaces(match):
@@ -143,17 +147,18 @@ def insert_table(fen_match):
         enp=fen.enpassant, half=fen.halfmove, full=fen.fullmove)
 
 
-def insert_fen_table(txt, dummy_type, dummy_fields, dummy_model, dummy_data,
-                     dummy_col):
+def insert_fen_table(output: TemplateRenderOutput, context: TemplateRenderContext):
     u"""
     Replace well formed  FEN data with a chess board diagram.
 
     This is a wrapper that looks for `[fen]`, `[/fen]` tags and
     replaces the content.
     """
-    return fen_re.sub(insert_table, txt)
+    # replace both answer and question tag
+    output.question_text = fen_re.sub(insert_table, output.question_text)
+    output.answer_text = fen_re.sub(insert_table, output.answer_text)
 
-
-old_css = Card.css
-Card.css = chess_card_css
-addHook("mungeQA", insert_fen_table)
+# replace output text with html
+hooks.card_did_render.append(insert_fen_table)
+# add CSS
+webview_will_set_content.append(chess_card_css)
